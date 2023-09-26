@@ -1,5 +1,7 @@
+import { startServer } from './app'
+
 function main () {
-  console.log('Hello World')
+  startServer()
 }
 
 main()
