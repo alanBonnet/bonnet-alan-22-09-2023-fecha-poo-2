@@ -1,6 +1,10 @@
 import { Schema, model } from 'mongoose'
 import { Producto } from './producto.entity'
-import { numberRequired, stringRequired, booleanDefaultTrue } from '../../types/mongo.types'
+import {
+  numberRequired,
+  stringRequired,
+  booleanDefaultTrue
+} from '../../types/mongo.types'
 
 const ProductoSchemaMongo = new Schema<Producto>(
   {
@@ -14,12 +18,6 @@ const ProductoSchemaMongo = new Schema<Producto>(
     imagen: {
       type: String
     },
-    categoriaId: {
-      type: Schema.Types.ObjectId
-    },
-    proveedorId: {
-      type: Schema.Types.ObjectId
-    },
     activeProducto: booleanDefaultTrue
   },
   {
@@ -28,4 +26,7 @@ const ProductoSchemaMongo = new Schema<Producto>(
   }
 )
 
-export const ProductoModelMongo = model<Producto>('Producto', ProductoSchemaMongo)
+export const ProductoModelMongo = model<Producto>(
+  'Producto',
+  ProductoSchemaMongo
+)

@@ -5,15 +5,10 @@ export function startProductoRouter (productoService: ProductoService) {
   const productoRouter = Router()
 
   // rutas
-  productoRouter.get('/', async (req, res) => {
+  productoRouter.get('/', async (_req, res) => {
     try {
       const allProductos = await productoService.list()
-      if (!allProductos.length) {
-        return res.status(404).json({
-          message: 'No se encuentran los productos'
-        })
-      }
-      return res.status(200).json(allProductos)
+      return res.status(allProductos.statusCode).json(allProductos)
     } catch (error) {
       return res.status(500).json({
         message: 'Error interno del servidor'
@@ -24,13 +19,10 @@ export function startProductoRouter (productoService: ProductoService) {
   productoRouter.get('/:nombreProducto', async (req, res) => {
     try {
       const { nombreProducto } = req.params
-      const allProductos = await productoService.findByName(nombreProducto)
-      if (!allProductos?.length) {
-        return res.status(404).json({
-          message: 'No se encuentran los productos'
-        })
-      }
-      return res.status(200).json(allProductos)
+      const allProductosByName = await productoService.findByName(
+        nombreProducto
+      )
+      return res.status(allProductosByName.statusCode).json(allProductosByName)
     } catch (error) {
       return res.status(500).json({
         message: 'Error interno del servidor'
@@ -40,17 +32,15 @@ export function startProductoRouter (productoService: ProductoService) {
 
   productoRouter.post('/', async (req, res) => {
     try {
-      const { nombre, precio, descripcion, imagen, cantidadStock, categoriaId, proveedorId } = req.body
+      const { nombre, precio, descripcion, imagen, cantidadStock } = req.body
       const newProducto = await productoService.create({
         nombre,
         precio,
         descripcion,
         imagen,
-        cantidadStock,
-        categoriaId,
-        proveedorId
+        cantidadStock
       })
-      return res.status(200).json(newProducto)
+      return res.status(newProducto.statusCode).json(newProducto)
     } catch (error) {
       return res.status(500).json({
         message: 'Error interno del servidor'
@@ -61,24 +51,15 @@ export function startProductoRouter (productoService: ProductoService) {
   productoRouter.patch('/:idProducto', async (req, res) => {
     try {
       const { idProducto } = req.params
-      const { nombre, precio, descripcion, imagen, cantidadStock, categoriaId, proveedorId } = req.body
+      const { nombre, precio, descripcion, imagen, cantidadStock } = req.body
       const updateProducto = await productoService.update(idProducto, {
         nombre,
         descripcion,
         precio,
         cantidadStock,
-        imagen,
-        categoriaId,
-        proveedorId
+        imagen
       })
-      if (!updateProducto) {
-        return res.status(404).json({
-          message: 'No se encontró el producto a modificar'
-        })
-      }
-      return res.status(200).json({
-        message: 'Producto modificado correctamente'
-      })
+      return res.status(updateProducto.statusCode).json(updateProducto)
     } catch (error) {
       return res.status(500).json({
         error,
@@ -91,12 +72,7 @@ export function startProductoRouter (productoService: ProductoService) {
     try {
       const { idProducto } = req.params
       const deleteProducto = await productoService.delete(idProducto)
-      if (!deleteProducto) {
-        return res.status(404).json({
-          message: 'No se encontró el producto a eliminar'
-        })
-      }
-      return res.status(200).json({ message: 'Producto eliminado correctamente' })
+      return res.status(deleteProducto.statusCode).json(deleteProducto)
     } catch (error) {
       return res.status(500).json({
         message: 'Error interno del servidor'
